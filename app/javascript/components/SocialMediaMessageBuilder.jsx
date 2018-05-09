@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
+// TODO: Restore axios when biz logic is migrated to backend
+// import axios from "axios";
 import _ from 'lodash';
-import ClipboardJS from 'clipboard';
 
 const DEFAULT_RESULT_TEXT = "Awaiting Input";
 const SELECT_BOX_OPTIONS = "Red Hot Buy, Crafted Workshop, Acepiration, Acescapism, Colorhouse".split(', ');
@@ -22,6 +22,7 @@ const CRAFTED_WORKSHOP_HANDLES = {
 const SM_CHANNELS = 'Facebook, Twitter, Pintrest, Instagram'.toLowerCase().split(', ');
 
 class SocialMediaMessageBuilder extends React.Component {
+    proptypes
   constructor(props){
     super(props);
     this.state = {
@@ -31,13 +32,6 @@ class SocialMediaMessageBuilder extends React.Component {
       selectedChoice: SELECT_BOX_OPTIONS[0],
       link: ''
     };
-    
-    // new ClipboardJS('.btn');
-    // new ClipboardJS('.btn', {
-    //     text: function(trigger) {
-    //         return trigger.getAttribute('aria-label');
-    //     }
-    // });
     
     this.handleChange = this.handleChange.bind(this);
     this.handleSelectedChoice= this.handleSelectedChoice.bind(this);
@@ -140,10 +134,10 @@ class SocialMediaMessageBuilder extends React.Component {
     switch(choice){
       case "Red Hot Buy":
         suffix = `More Deals: ${BROADWAY_ACE_DEALS_URL}`;
-        template = `${message} ${suffix} ${link}` 
+        template = `${message} ${suffix} ${link}`;
         break;
       case "Crafted Workshop":
-        hashtags << ACEPIRATION_HASHTAG
+        hashtags << ACEPIRATION_HASHTAG;
         handles = CRAFTED_WORKSHOP_HANDLES;
         
         template = this.generateMultiSuffix(message, link, handles, hashtags);
@@ -158,7 +152,7 @@ class SocialMediaMessageBuilder extends React.Component {
         break;
       case 'Colorhouse':
         if(_.isEmpty(link)){
-          link = 'http://www.colorhousepaint.com/'  
+          link = 'http://www.colorhousepaint.com/';  
         }
 
         handles = COLORHOUSE_HANDLES;
@@ -166,7 +160,7 @@ class SocialMediaMessageBuilder extends React.Component {
         template = this.generateMultiSuffix(message, link, handles, hashtags);
         break;
       default:
-        template = `ERROR: Invalid Selection ${choice}`
+        template = `ERROR: Invalid Selection ${choice}`;
         break;
     }
     
@@ -176,15 +170,12 @@ class SocialMediaMessageBuilder extends React.Component {
   }
   
   generateMultiSuffix(message, link, handles, hashtags=[]){
-    let result = []
+    let result = [];
     let _hashtags = hashtags.join(' ');
     let index = 0;
-    
-    // console.log(`Handles: ${handles}`);
-    // console.log(`keys: ${Object.keys(handles.keys}`);
-    
+
     if(_.includes(Object.keys(handles),'all')){
-      console.log(`All channels a go`);
+      result.push(<div key={index++}>{`${message} ${link} ${handles.all} ${_hashtags}`}</div>); 
     }
     _.each(SM_CHANNELS, (channel)=>{
       if(!_.isEmpty(handles[channel])){
@@ -219,11 +210,6 @@ class SocialMediaMessageBuilder extends React.Component {
         <div id='result'>{this.getResultText()}</div>
       </React.Fragment>
     );
-    // <div>
-    //   <input id='messageResult' value={this.getResultText()} readOnly></input>
-    // </div>
-    // <textarea onChange={this.handleChange} onSubmit={this.copyText}></textarea>
-    // <button className="btn" type='submit' data-clipboard-target="#messageResult">Copy</button>
   }
 }
 
