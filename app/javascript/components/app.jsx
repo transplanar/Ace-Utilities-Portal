@@ -23,9 +23,18 @@ class App extends React.Component {
     super(props);
     
     this.state = {
-        mode: modes.default
+        mode: modes.default,
+        navButtons: []
     };
   }
+  
+//   componentDidMount(){
+//     let buttons = this.generateNavButtons();
+    
+//     this.setState({
+//       navButtons: buttons
+//     });
+//   }
   
   selectMode(mode){
       let newMode = '';
@@ -39,26 +48,21 @@ class App extends React.Component {
       
       this.setState({
           mode: newMode
-      })
+      });
   }
   
-  generateNavButtons(){
-      let arr = _.range(numNavButtons);
-      let buttons = [];
+//   generateNavButtons(){
+//       let arr = _.range(numNavButtons);
+//       let buttons = [];
       
-    //   let options = _.map(SELECT_BOX_OPTIONS, (elem, index)=>{
-    //       return <option key={index} value={elem}>{elem}</option>; 
-    //     });
-
-      
-      _.each(arr, (elem, index)=>{
-          let btn = <button key={index} onClick={()=>this.selectMode(modes.socialMedia.label) }>{modes.socialMedia.label}</button>
-          buttons << btn;
-      });
+//       _.each(arr, (elem, index)=>{
+//           let btn = <button key={index} text={modes.socialMedia.label} onClick={()=>this.selectMode(modes.socialMedia.label)}></button>
+//           buttons << btn;
+//       });
     
 
-      return buttons;
-  }
+//       return buttons;
+//   }
   
   handleChange(event){
    
@@ -68,7 +72,7 @@ class App extends React.Component {
     return (
       <div id="app">
         <div id='nav'>
-            {this.generateNavButtons()}
+            <button key={modes.socialMedia.label} text={modes.socialMedia.label} onClick={()=>this.selectMode(modes.socialMedia.label)}>Button</button>
         </div>
         <div id='body'>
             {this.state.mode.content}
