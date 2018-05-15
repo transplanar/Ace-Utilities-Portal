@@ -6,7 +6,6 @@ import SocialMediaMessageBuilder from "./SocialMediaMessageBuilder.jsx"
 // import HourlyCalculator from "./HourlyCalculator.jsx"
 // import SquareFootCalculator from "./SquareFootCalculator.jsx"
 
-const numNavButtons = 1;
 const modes = {
     default: {
       label: 'Default Mode',
@@ -18,28 +17,33 @@ const modes = {
     }
 }
 
+const numNavButtons = 1;
+
 class App extends React.Component {
   constructor(props){
     super(props);
     
     this.state = {
-        mode: modes.default,
-        navButtons: []
+        mode: modes.socialMedia,
+        navButtons: ''
     };
   }
   
-//   componentDidMount(){
-//     let buttons = this.generateNavButtons();
+  componentDidMount(){
+    var navButtons = _.range(numNavButtons).map((elem,index)=>{
+      return <button key={index} onClick={()=>this.selectMode(modes.socialMedia.label)}>{modes.socialMedia.label}</button>;
+    });
     
-//     this.setState({
-//       navButtons: buttons
-//     });
-//   }
+    this.setState({
+      navButtons: navButtons
+    });
+  }
   
   selectMode(mode){
       let newMode = '';
       switch(mode){
         case modes.socialMedia.label:
+            newMode = modes.socialMedia;
             break;
         default:
             console.warn(`Invalid mode ${mode}`);
@@ -51,28 +55,35 @@ class App extends React.Component {
       });
   }
   
-//   generateNavButtons(){
-//       let arr = _.range(numNavButtons);
-//       let buttons = [];
+  // // generateNavButtons(){
+  // //     console.log(`Nav button number ${numNavButtons}`);
+  // //     var arr = _.range(numNavButtons);
+  // //     var buttons = [];
       
-//       _.each(arr, (elem, index)=>{
-//           let btn = <button key={index} text={modes.socialMedia.label} onClick={()=>this.selectMode(modes.socialMedia.label)}></button>
-//           buttons << btn;
-//       });
+  // //     console.log(`Generate from array "${arr}"`);
+      
+  // //     _.each(arr, (elem, index)=>{
+  // //         // console.log(`Pushing button for index ${index}`);
+  // //         // var btn = 
+  // //         // console.log(`Adding new thingy "${btn}"`);
+  // //         // buttons << btn;
+  // //         buttons << (<button key={index} text={modes.socialMedia.label} onClick={()=>this.selectMode(modes.socialMedia.label)}>{modes.socialMedia.label}</button>)
+  // //     });
+      
+  // //     console.log(`Buttons "${buttons}"`);
     
-
-//       return buttons;
-//   }
+  // //     return buttons;
+  // // }
   
-  handleChange(event){
+  // handleChange(event){
    
-  }
+  // }
   
   render () {
     return (
       <div id="app">
         <div id='nav'>
-            <button key={modes.socialMedia.label} text={modes.socialMedia.label} onClick={()=>this.selectMode(modes.socialMedia.label)}>Button</button>
+            {this.state.navButtons}
         </div>
         <div id='body'>
             {this.state.mode.content}
@@ -80,6 +91,8 @@ class App extends React.Component {
       </div>
     );
   }
+  
+  // <button key={modes.socialMedia.label} text={modes.socialMedia.label} onClick={()=>this.selectMode(modes.socialMedia.label)}>Button</button>
 }
 
 export default App;
