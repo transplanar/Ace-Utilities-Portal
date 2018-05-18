@@ -2,36 +2,39 @@ import React from "react"
 import PropTypes from "prop-types"
 import _ from 'lodash';
 
-import SocialMediaMessageBuilder from "./SocialMediaMessageBuilder.jsx"
-// import HourlyCalculator from "./HourlyCalculator.jsx"
-// import SquareFootCalculator from "./SquareFootCalculator.jsx"
+import SocialMediaMessageBuilder from "./SocialMediaMessageBuilder"
+import ScreenCalculator from "./ScreenCalculator"
 
-const modes = {
-    default: {
-      label: 'Default Mode',
-      content: <div>No mode selected</div>
-    },
-    socialMedia: {
-        label: 'Social Media Builder',
-        content: <SocialMediaMessageBuilder />
-    }
-}
-
-const numNavButtons = 1;
 
 class App extends React.Component {
   constructor(props){
     super(props);
     
+    this.modes = {
+      socialMedia: {
+          label: "Social Media Message Builder",
+          content: <SocialMediaMessageBuilder />
+      },
+      screenCalculator: {
+        label: 'Screen Cost Calculator',
+        content: <ScreenCalculator />
+      }
+    }; 
+    
     this.state = {
-        mode: modes.socialMedia,
+        mode: this.modes.socialMedia,
         navButtons: ''
     };
   }
   
   componentDidMount(){
-    var navButtons = _.range(numNavButtons).map((elem,index)=>{
-      return <button key={index} onClick={()=>this.selectMode(modes.socialMedia.label)}>{modes.socialMedia.label}</button>;
+    this.renderNavButtons();
+  };
+  
+  renderNavButtons(){
+    var navButtons = _.map(this.modes, (mode) => {
+      var label = mode.label;
+      return <button key={label} onClick={()=>this.selectMode(mode)}>{label}</button>;
     });
     
     this.setState({
@@ -40,44 +43,14 @@ class App extends React.Component {
   }
   
   selectMode(mode){
-      let newMode = '';
-      switch(mode){
-        case modes.socialMedia.label:
-            newMode = modes.socialMedia;
-            break;
-        default:
-            console.warn(`Invalid mode ${mode}`);
-            break;
+      if(_.includes(this.modes, mode)){
+        this.setState({
+            mode: mode
+        });  
+      }else{
+        console.warn(`Invalid mode supplied: ${JSON.stringify(mode)}`);
       }
-      
-      this.setState({
-          mode: newMode
-      });
-  }
-  
-  // // generateNavButtons(){
-  // //     console.log(`Nav button number ${numNavButtons}`);
-  // //     var arr = _.range(numNavButtons);
-  // //     var buttons = [];
-      
-  // //     console.log(`Generate from array "${arr}"`);
-      
-  // //     _.each(arr, (elem, index)=>{
-  // //         // console.log(`Pushing button for index ${index}`);
-  // //         // var btn = 
-  // //         // console.log(`Adding new thingy "${btn}"`);
-  // //         // buttons << btn;
-  // //         buttons << (<button key={index} text={modes.socialMedia.label} onClick={()=>this.selectMode(modes.socialMedia.label)}>{modes.socialMedia.label}</button>)
-  // //     });
-      
-  // //     console.log(`Buttons "${buttons}"`);
-    
-  // //     return buttons;
-  // // }
-  
-  // handleChange(event){
-   
-  // }
+  };
   
   render () {
     return (
@@ -91,8 +64,6 @@ class App extends React.Component {
       </div>
     );
   }
-  
-  // <button key={modes.socialMedia.label} text={modes.socialMedia.label} onClick={()=>this.selectMode(modes.socialMedia.label)}>Button</button>
 }
 
 export default App;
