@@ -2,77 +2,61 @@ import React from "react"
 import PropTypes from "prop-types"
 import _ from 'lodash';
 
-import SocialMediaMessageBuilder from "./SocialMediaMessageBuilder.jsx"
-// import HourlyCalculator from "./HourlyCalculator.jsx"
-// import SquareFootCalculator from "./SquareFootCalculator.jsx"
+import SocialMediaMessageBuilder from "./SocialMediaMessageBuilder"
+import ScreenCalculator from "./ScreenCalculator"
 
-const numNavButtons = 1;
-const modes = {
-    default: {
-      label: 'Default Mode',
-      content: <div>No mode selected</div>
-    },
-    socialMedia: {
-        label: 'Social Media Builder',
-        content: <SocialMediaMessageBuilder />
-    }
-}
 
 class App extends React.Component {
   constructor(props){
     super(props);
     
+    this.modes = {
+      socialMedia: {
+          label: "Social Media Message Builder",
+          content: <SocialMediaMessageBuilder />
+      },
+      screenCalculator: {
+        label: 'Screen Cost Calculator',
+        content: <ScreenCalculator />
+      }
+    }; 
+    
     this.state = {
-        mode: modes.default,
-        navButtons: []
+        mode: this.modes.socialMedia,
+        navButtons: ''
     };
   }
   
-//   componentDidMount(){
-//     let buttons = this.generateNavButtons();
+  componentDidMount(){
+    this.renderNavButtons();
+  };
+  
+  renderNavButtons(){
+    var navButtons = _.map(this.modes, (mode) => {
+      var label = mode.label;
+      return <button key={label} onClick={()=>this.selectMode(mode)}>{label}</button>;
+    });
     
-//     this.setState({
-//       navButtons: buttons
-//     });
-//   }
+    this.setState({
+      navButtons: navButtons
+    });
+  }
   
   selectMode(mode){
-      let newMode = '';
-      switch(mode){
-        case modes.socialMedia.label:
-            break;
-        default:
-            console.warn(`Invalid mode ${mode}`);
-            break;
+      if(_.includes(this.modes, mode)){
+        this.setState({
+            mode: mode
+        });  
+      }else{
+        console.warn(`Invalid mode supplied: ${JSON.stringify(mode)}`);
       }
-      
-      this.setState({
-          mode: newMode
-      });
-  }
-  
-//   generateNavButtons(){
-//       let arr = _.range(numNavButtons);
-//       let buttons = [];
-      
-//       _.each(arr, (elem, index)=>{
-//           let btn = <button key={index} text={modes.socialMedia.label} onClick={()=>this.selectMode(modes.socialMedia.label)}></button>
-//           buttons << btn;
-//       });
-    
-
-//       return buttons;
-//   }
-  
-  handleChange(event){
-   
-  }
+  };
   
   render () {
     return (
       <div id="app">
         <div id='nav'>
-            <button key={modes.socialMedia.label} text={modes.socialMedia.label} onClick={()=>this.selectMode(modes.socialMedia.label)}>Button</button>
+            {this.state.navButtons}
         </div>
         <div id='body'>
             {this.state.mode.content}
