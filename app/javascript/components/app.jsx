@@ -22,7 +22,8 @@ class App extends React.Component {
     }; 
     
     this.state = {
-        mode: this.modes.socialMedia,
+        // mode: this.modes.socialMedia,
+        mode: this.modes.screenCalculator,
         navButtons: ''
     };
   }

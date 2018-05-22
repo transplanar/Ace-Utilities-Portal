@@ -22,7 +22,6 @@ const CRAFTED_WORKSHOP_HANDLES = {
 const SM_CHANNELS = 'Facebook, Twitter, Pintrest, Instagram'.toLowerCase().split(', ');
 
 class SocialMediaMessageBuilder extends React.Component {
-    proptypes
   constructor(props){
     super(props);
     this.state = {
@@ -34,7 +33,7 @@ class SocialMediaMessageBuilder extends React.Component {
     };
     
     this.handleChange = this.handleChange.bind(this);
-    this.handleSelectedChoice= this.handleSelectedChoice.bind(this);
+    this.selectMode= this.selectMode.bind(this);
     this.handleLinkInput = this.handleLinkInput.bind(this);
     this.updateResultMessage= this.updateResultMessage.bind(this);
   }
@@ -65,7 +64,7 @@ class SocialMediaMessageBuilder extends React.Component {
       this.updateResultMessage({message: message});
   }
   
-  handleSelectedChoice(event){
+  selectMode(event){
     let choice = event.target.value;
     
     this.setState({
@@ -204,7 +203,7 @@ class SocialMediaMessageBuilder extends React.Component {
         <h1>Red Hot Buy Generator</h1>
         <textarea onChange={this.handleChange}></textarea>
         <input onChange={this.handleLinkInput}></input>
-        <select onChange={this.handleSelectedChoice} value={this.state.selectedChoice}>
+        <select onChange={this.selectMode} value={this.state.selectedChoice}>
           {this.state.selectOptionsContent}
         </select>
         <div id='result'>{this.getResultText()}</div>
