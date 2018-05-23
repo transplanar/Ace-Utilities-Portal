@@ -83,7 +83,7 @@ class ScreenGlassCalculator extends React.Component {
   }
 
   getCost(){
-    var area = this.getarea();
+    var area = this.getArea();
     var rawCost = this.state.currentOption.cost(area);
 
     if(rawCost == APPROVAL_REQUIRED){
