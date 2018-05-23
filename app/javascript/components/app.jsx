@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import SocialMediaMessageBuilder from "./SocialMediaMessageBuilder"
 import ScreenGlassCalculator from "./ScreenGlassCalculator"
-
+import SignGenerator from "./SignGenerator"
 
 class App extends React.Component {
   constructor(props){
