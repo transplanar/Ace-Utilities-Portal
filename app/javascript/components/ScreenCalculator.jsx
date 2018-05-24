@@ -2,103 +2,70 @@ import React from "react"
 import PropTypes from "prop-types"
 import _ from 'lodash'
 
-const selectBoxOptions = {
-  glassSingle: 'Glass - SINGLE STRENGTH',
-  glassDouble: 'Glass - DOUBLE STRENGTH',
-  screenNew: 'Screen - NEW',
-  screenRepair: 'Screen - REPAIR'
-}
+const APPROVAL_REQUIRED = "Area Exceeds 12 Square Feet. Manager Approval Required";
 
 class ScreenCalculator extends React.Component {
   constructor(props){
     super(props);
+    
+    this.options = {
+      glassSingle: {
+        label: 'Glass - Single Strength',
+        cost: ((sqft) => {return sqft * 3.75})
+      },
+      glassDouble: {
+        label: 'Glass - Double Strength',
+        cost: ((sqft) => {return sqft * 4.25})
+      },
+      screenNew: {
+        label: "Screen - New",
+        cost: (sqft) => {return this.getNewScreenCost(sqft)}
+      },
+      screenRepair: {
+        label: "Screen - Repair",
+        cost: (sqft) => {return sqft * 2.25}
+      }
+    };
+    
     this.state = {
       width: 0,
       height: 0,
-      cost: 0.00, 
-      sqft: 0,
-      error: null,
-      selectOptionsContent: '',
-      selectedChoice: ''
+      currentOption: this.options.glassSingle,
+      optionsContent: null,
+      cost: null
     };
-    
-    
-    // TODO Convert to match App.jsx mode switching
-    // this.modes = {
-    //   glassSingle: {
-    //     fxn: 
-    //   },
-    // }
 
     this.handleInput = this.handleInput.bind(this);
-    this.handleSelectedChoice = this.handleSelectedChoice.bind(this);
-    this.getCost = this.getCost.bind(this);
+    this.selectMode = this.selectMode.bind(this);
   }
   
   componentDidMount(){
-    let options = this.generateSelectOptions();
+    var options = this.generateSelectorOptions();
     
     this.setState({
-      selectOptionsContent: options
+      optionsContent: options
     });
   }
   
-  generateSelectOptions(){
-    let options = _.map(selectBoxOptions, (elem, index)=>{
-      return <option key={index} value={elem}>{elem}</option>; 
+  generateSelectorOptions(){
+    return _.map(this.options, (option)=>{
+      return <option key={option.label} value={option.label}>{option.label}</option>
     });
-
-    return options;
   }
   
   handleInput(e){
-    this.setState({[e.target.name]: e.target.value});
-    this.getCost();
-  }
-  
-  handleSelectedChoice(event){
     this.setState({
-      selectedChoice: event.target.value
+      [e.target.name]: e.target.value
     });
   }
   
-  resolveCalcType(){
-    let result = null;
-    
-    switch(this.state.selectedChoice){
-      case selectBoxOptions.glassDouble:
-        result = this.getDoubleStrengthGlassCost();
-        break;
-      case selectBoxOptions.glassSingle:
-        result = this.getSingleStrengthGlassCost();
-        break;
-      case selectBoxOptions.screenNew:
-        result = this.getScreenNewCost();
-        break;
-      case selectBoxOptions.screenRepair:
-        result = this.getScreenRepairCost();
-        break;
-      default:
-        console.log(`Invalid SquareFootCalculator option ${this.state.selectedChoice}`);
-    }
-    
-    return result;
-  }
-  
-  getScreenNewCost(){
-      const width = this.state.width;
-      const height = this.state.height;
-       const sqft = (width * height) / 144;
-      
+  getNewScreenCost(sqft){
       let result = 0;
-      
+
       if(sqft > 12){
-        this.setState({error: "Manager Approval Required"});  
-      }else{
-        this.setState({error: null});    
+        result = APPROVAL_REQUIRED;
       }
-      
-      if(sqft > 10){
+      else if(sqft > 10){
          result = 31; 
       }else if(sqft > 8){
          result = 26; 
@@ -113,63 +80,55 @@ class ScreenCalculator extends React.Component {
       }
       
       return result;
-      
-      // this.setState({cost: result, sqft: sqft});
   }
   
   getCost(){
-      // return <span>${parseFloat(this.state.cost).toFixed(2)}</span>;
-  }
-  
-  getSqft(){
-    console.log(`Dimensions ${this.state.width}\" x ${this.state.height}\"`);
+    var area = this.getSqft();
+    var rawCost = this.state.currentOption.cost(area);
     
-      // return <div>Area: {parseFloat(this.state.sqft).toFixed(2)}ft<sup>2</sup></div>
-      return parseFloat((this.state.width) * this.state.height) / 144;
+    if(rawCost == APPROVAL_REQUIRED){
+      return APPROVAL_REQUIRED;
+    }
+    
+    var formattedCost = `$${rawCost.toFixed(2)}`;
+    
+    return formattedCost;
   }
   
   getError(){
       return <div>{this.state.error}</div>
   }
   
-  getScreenRepairCost(){
-      // return this.state.sqft * 2.25.toFixed(2)
-      return this.getCostFromSqftCost(2.25);
+  selectMode(event){
+    var label = event.target.value; 
+    var option = _.find(this.options, {label: label});
+
+    this.setState({
+      currentOption: option
+    });
   }
   
-  getSingleStrengthGlassCost(){
-      // return parseFloat(this.state.sqft * 3.75).toFixed(2);
-      return this.getCostFromSqftCost(3.75);
+  //Required accessor to resolve after width/height set by handleInput()
+  getSqft(){
+    var result = (this.state.width * this.state.height) / 144
+    
+    return result.toFixed(2);
   }
-  
-  getDoubleStrengthGlassCost(){
-      // return <div>Rescreen Cost: ${parseFloat(this.state.sqft * 4.25).toFixed(2)}</div>
-      return this.getCostFromSqftCost(4.25);
-  }
-  
-  getCostFromSqftCost(sqftCost){
-    return parseFloat(this.state.sqft * sqftCost).toFixed(2);
-  }
-  
-  // getCost(){
-  //   return this.state.cost;
-  // }
-  
-  // TODO: Complete Generalized square foot calculator
+ 
   render () {
     return (
       <React.Fragment>
         <h1>Square Foot Calculator</h1>
-        <select onChange={this.handleSelectedChoice} value={this.state.selectedChoice}>
-          {this.state.selectOptionsContent}
+        <select id='option' onChange={this.selectMode} value={this.state.currentOption.label}>
+          {this.state.optionsContent}
         </select>
-        
+
         Width (inches): <input type='number' value={this.state.width} name = 'width' onChange={this.handleInput} />
         Height (inches): <input type='number' value={this.state.height} name = 'height' onChange={this.handleInput} />
-        {this.getSqft() + "ft²"} 
+        <div>
+          Area: {this.getSqft() + " ft²"} 
+        </div>
         {this.state.error ? this.getError() : <div>Cost: {this.getCost()}</div>}
-        <h1>Rescreen</h1>
-        {this.state.cost}
       </React.Fragment>
     );
   }
