@@ -1,8 +1,7 @@
 source 'https://rubygems.org'
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.5'
+gem 'rails', '4.2.8'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 # Use SCSS for stylesheets
@@ -45,7 +44,7 @@ group :development do
   gem 'spring'
 end
 
-gem 'webpacker'
+gem 'interactor', '~> 3.0'
 gem 'react-rails'
 gem 'responders', '~> 2.0'
-gem "interactor", "~> 3.0"
+gem 'webpacker'
